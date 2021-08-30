@@ -21,11 +21,8 @@ public class FileController {
     private final FileUploadService fileUploadService;
 
     @PostMapping("/upload")
-    public UploadResult upload(
-            @RequestParam("file") MultipartFile file
-    ) throws IOException {
+    public UploadResult upload(@RequestParam("file") MultipartFile file) throws IOException {
 
-        log.info("/upload file.name : {}", file.getOriginalFilename());
         String path = fileUploadService.upload(file);
         log.info("/upload path : {}", path);
 
@@ -37,16 +34,17 @@ public class FileController {
     }
 
     @PostMapping("/uploads")
-    public UploadResult uploads(
-            @RequestParam("files") MultipartFile[] multipartFiles
-    ) throws IOException {
+    public UploadResult uploads(@RequestParam("files") MultipartFile[] multipartFiles) throws IOException {
+
         List<String> name = new ArrayList<>();
         List<String> path = new ArrayList<>();
+
         for (MultipartFile file : multipartFiles) {
             String uploadPath = fileUploadService.upload(file);
             path.add(uploadPath);
             name.add(file.getOriginalFilename());
         }
+
         return UploadResult.builder()
                 .name(name)
                 .path(path)

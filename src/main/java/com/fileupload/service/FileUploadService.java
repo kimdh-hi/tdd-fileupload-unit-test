@@ -1,5 +1,6 @@
 package com.fileupload.service;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,12 +12,13 @@ import java.nio.file.Path;
 
 @Slf4j
 @Service
+@Setter
 public class FileUploadService {
 
-    private Path path;
+    private Path uploadDir;
 
     public FileUploadService() {
-        this.path = Path.of("uploads");
+        this.uploadDir = Path.of("uploads");
         try {
             initUploadDirectory();
         } catch (IOException e) {
@@ -24,13 +26,13 @@ public class FileUploadService {
         }
     }
 
-    private void initUploadDirectory() throws IOException {
-        if (!Files.exists(path)) Files.createDirectories(path);
+    public void initUploadDirectory() throws IOException {
+        if (!Files.exists(uploadDir)) Files.createDirectories(uploadDir);
     }
 
     public String upload(MultipartFile file) throws IOException {
-        file.transferTo(path.resolve(file.getOriginalFilename()));
+        file.transferTo(uploadDir.resolve(file.getOriginalFilename()));
 
-        return path.resolve(file.getOriginalFilename()).toString();
+        return uploadDir.resolve(file.getOriginalFilename()).toString();
     }
 }
