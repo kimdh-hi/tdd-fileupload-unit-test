@@ -32,6 +32,7 @@ public class FileUploadService {
 
     public String upload(MultipartFile file) throws IOException {
         file.transferTo(uploadDir.resolve(file.getOriginalFilename()));
+        log.info("UploadService upload file : {}", file.getOriginalFilename());
 
         return uploadDir.resolve(file.getOriginalFilename()).toString();
     }

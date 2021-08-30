@@ -4,6 +4,8 @@ import com.fileupload.response.UploadResult;
 import com.fileupload.service.FileUploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,32 +23,33 @@ public class FileController {
     private final FileUploadService fileUploadService;
 
     @PostMapping("/upload")
-    public UploadResult upload(@RequestParam("file") MultipartFile file) throws IOException {
-
-        String path = fileUploadService.upload(file);
-        log.info("/upload path : {}", path);
+    public UploadResult upload(
+            @AuthenticationPrincipal UserDetails principal,
+            @RequestParam(value = "file") MultipartFile file) throws IOException {
+        log.info("/upload file : {}", file.getOriginalFilename());
+        fileUploadService.upload(file);
 
         return UploadResult.builder()
-                .name(List.of(file.getOriginalFilename()))
-                .path(List.of(path))
+                .path(List.of("/files/"+file.getOriginalFilename()))
+                .userName(principal.getUsername())
                 .statusCode(200)
                 .build();
     }
 
     @PostMapping("/uploads")
-    public UploadResult uploads(@RequestParam("files") MultipartFile[] multipartFiles) throws IOException {
+    public UploadResult uploads(
+            @AuthenticationPrincipal UserDetails principal,
+            @RequestParam("files") MultipartFile[] multipartFiles) throws IOException {
 
-        List<String> name = new ArrayList<>();
         List<String> path = new ArrayList<>();
 
         for (MultipartFile file : multipartFiles) {
-            String uploadPath = fileUploadService.upload(file);
-            path.add(uploadPath);
-            name.add(file.getOriginalFilename());
+            fileUploadService.upload(file);
+            path.add("/files/"+file.getOriginalFilename());
         }
 
         return UploadResult.builder()
-                .name(name)
+                .userName(principal.getUsername())
                 .path(path)
                 .statusCode(200)
                 .build();

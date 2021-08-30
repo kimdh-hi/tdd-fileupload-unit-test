@@ -12,7 +12,7 @@ import java.util.List;
 public class UploadResult {
 
     private List<String> path;
-    private List<String> name;
+    private String userName;
     private int statusCode;
 
 }
