@@ -1,7 +1,7 @@
 package com.fileupload;
 
 import com.fileupload.response.UploadResult;
-import com.fileupload.service.FileUploadService;
+import com.fileupload.service.FileService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -35,7 +34,8 @@ public class FileUploadTest {
     private int port;
     private Path rootPath;
 
-    @Autowired FileUploadService fileUploadService;
+    @Autowired
+    FileService fileService;
 
 
     @BeforeEach
@@ -47,8 +47,8 @@ public class FileUploadTest {
         // 똑같은 폴더에 같은 이름의 파일이 계속 덮어지면 제대로 테스트가 되는지 확인할 수 없음
         // 테스트마다 랜덤한 이름의 폴더 생성
         rootPath = rootPath.resolve(""+Math.abs(new Random().nextInt()));
-        fileUploadService.setUploadDir(rootPath);
-        fileUploadService.initUploadDirectory();
+        fileService.setUploadDir(rootPath);
+        fileService.initUploadDirectory();
     }
 
     @AfterEach

@@ -13,11 +13,12 @@ import java.nio.file.Path;
 @Slf4j
 @Service
 @Setter
-public class FileUploadService {
+public class
+FileService {
 
     private Path uploadDir;
 
-    public FileUploadService() {
+    public FileService() {
         this.uploadDir = Path.of("uploads");
         try {
             initUploadDirectory();
@@ -34,5 +35,9 @@ public class FileUploadService {
         file.transferTo(uploadDir.resolve(file.getOriginalFilename()));
 
         return uploadDir.resolve(file.getOriginalFilename()).toString();
+    }
+
+    public Path getDownloadPath(String file) {
+        return uploadDir.resolve(file);
     }
 }
